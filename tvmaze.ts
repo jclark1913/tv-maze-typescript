@@ -1,5 +1,5 @@
 import axios from "axios";
-import * as $ from 'jquery';
+import * as $ from "jquery";
 
 const $showsList = $("#showsList");
 const $episodesArea = $("#episodesArea");
@@ -7,9 +7,7 @@ const $searchForm = $("#searchForm");
 
 const DEFAULT_IMG_URL = "https://tinyurl.com/tv-missing";
 
-const BASE_API_URL =  "https://api.tvmaze.com"
-
-
+const BASE_API_URL = "https://api.tvmaze.com";
 
 // [
 //   {
@@ -40,9 +38,9 @@ const BASE_API_URL =  "https://api.tvmaze.com"
 // Promise -> Array -> ShowDataInterface
 
 interface ShowDataInterface {
-  id: number,
-  name: string,
-  summary: string,
+  id: number;
+  name: string;
+  summary: string;
   image: string;
 }
 
@@ -50,44 +48,45 @@ interface ShowDataInterface {
 
 async function getShowsByTerm(term: string) {
   // ADD: Remove placeholder & make request to TVMaze search shows API.
-  let result = await axios.get(`${BASE_API_URL}/search/shows`, { params: {q: term}} )
-  console.log(result)
+  let result = await axios.get(`${BASE_API_URL}/search/shows`, {
+    params: { q: term },
+  });
+  console.log(result);
   return result.data;
 }
 
-
 /** Given list of shows, create markup for each and to DOM */
 
-function populateShows(shows) {
+function populateShows(shows: ShowDataInterface[]) {
   $showsList.empty();
-
   for (let show of shows) {
-    let imageUrl = DEFAULT_IMG_URL
-    if ("image" in show) {
-      imageUrl = show.image.original
-    }
+    const showData = show.show;
+    // console.log("show-img", show.show.image.original);
+    let imageUrl = DEFAULT_IMG_URL;
+
+    showData.image ? (imageUrl = showData.image.original) : imageUrl;
     const $show = $(
-      `<div data-show-id="${show.id}" class="Show col-md-12 col-lg-6 mb-4">
+      `<div data-show-id="${showData.id}" class="Show col-md-12 col-lg-6 mb-4">
          <div class="media">
            <img
               src="${imageUrl}"
               alt="Bletchly Circle San Francisco"
               class="w-25 me-3">
            <div class="media-body">
-             <h5 class="text-primary">${show.name}</h5>
-             <div><small>${show.summary}</small></div>
+             <h5 class="text-primary">${showData.name}</h5>
+             <div><small>${showData.summary}</small></div>
              <button class="btn btn-outline-light btn-sm Show-getEpisodes">
                Episodes
              </button>
            </div>
          </div>
        </div>
-      `);
+      `
+    );
 
     $showsList.append($show);
   }
 }
-
 
 /** Handle search form submission: get shows from API and display.
  *    Hide episodes area (that only gets shown if they ask for episodes)
@@ -105,7 +104,6 @@ $searchForm.on("submit", async function (evt) {
   evt.preventDefault();
   await searchForShowAndDisplay();
 });
-
 
 /** Given a show ID, get from API and return (promise) array of episodes:
  *      { id, name, season, number }

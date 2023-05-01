@@ -12842,7 +12842,9 @@ function getShowsByTerm(term) {
         var result;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, axios_1.default.get("".concat(BASE_API_URL, "/search/shows"), { params: { q: term } })];
+                case 0: return [4 /*yield*/, axios_1.default.get("".concat(BASE_API_URL, "/search/shows"), {
+                        params: { q: term },
+                    })];
                 case 1:
                     result = _a.sent();
                     console.log(result);
@@ -12856,11 +12858,11 @@ function populateShows(shows) {
     $showsList.empty();
     for (var _i = 0, shows_1 = shows; _i < shows_1.length; _i++) {
         var show = shows_1[_i];
+        var showData = show.show;
+        // console.log("show-img", show.show.image.original);
         var imageUrl = DEFAULT_IMG_URL;
-        if ("image" in show) {
-            imageUrl = show.image.original;
-        }
-        var $show = $("<div data-show-id=\"".concat(show.id, "\" class=\"Show col-md-12 col-lg-6 mb-4\">\n         <div class=\"media\">\n           <img\n              src=\"").concat(imageUrl, "\"\n              alt=\"Bletchly Circle San Francisco\"\n              class=\"w-25 me-3\">\n           <div class=\"media-body\">\n             <h5 class=\"text-primary\">").concat(show.name, "</h5>\n             <div><small>").concat(show.summary, "</small></div>\n             <button class=\"btn btn-outline-light btn-sm Show-getEpisodes\">\n               Episodes\n             </button>\n           </div>\n         </div>\n       </div>\n      "));
+        showData.image ? (imageUrl = showData.image.original) : imageUrl;
+        var $show = $("<div data-show-id=\"".concat(showData.id, "\" class=\"Show col-md-12 col-lg-6 mb-4\">\n         <div class=\"media\">\n           <img\n              src=\"").concat(imageUrl, "\"\n              alt=\"Bletchly Circle San Francisco\"\n              class=\"w-25 me-3\">\n           <div class=\"media-body\">\n             <h5 class=\"text-primary\">").concat(showData.name, "</h5>\n             <div><small>").concat(showData.summary, "</small></div>\n             <button class=\"btn btn-outline-light btn-sm Show-getEpisodes\">\n               Episodes\n             </button>\n           </div>\n         </div>\n       </div>\n      "));
         $showsList.append($show);
     }
 }
